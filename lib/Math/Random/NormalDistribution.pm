@@ -1,8 +1,129 @@
 package Math::Random::NormalDistribution;
+# coding: UTF-8
 
-use 5.006;
+use utf8;
 use strict;
-use warnings FATAL => 'all';
+use warnings;
+
+# ------------------------------------------------------------------------------
+our $VERSION = '0.01';
+
+use Exporter;
+use base qw(Exporter);
+our @EXPORT = qw(
+    password_entropy
+);
+# ------------------------------------------------------------------------------
+use constant PI => 4 * atan2(1, 1);
+# ------------------------------------------------------------------------------
+sub rand_nd_generator(;@)
+{
+    my ($mean, $stddev) = @_;
+
+    my $saved = undef;
+
+    return sub {
+
+    };
+}
+sub rand_nd_generator_log(;@)
+{
+    my ($mean, $stddev) = @_;
+
+    my $saved = undef;
+
+    return sub {
+
+    };
+}
+# ------------------------------------------------------------------------------
+sub nd_1
+{
+    my $rho = 1.0 - rand; # distributed in the interval ( 0; +1 ]
+    my $phi = 1.0 - rand;
+
+    my $s = 2.0 * PI * $phi;
+    my $t = sqrt(-2.0 * log($rho));
+
+    my $v1 = cos($s) * $t;
+    my $v2 = sin($s) * $t;
+
+    return $v1;
+}
+sub nd_2
+{
+    my ($x, $y, $s);
+
+    while (1) {
+        $x = 1.0 - 2.0 * rand; # distributed in the interval ( -1; +1 ] wrong!!!
+        $y = 1.0 - 2.0 * rand;
+
+        $s = $x * $x + $y * $y;
+        last if ($s > 0.0 && $s <= 1.0);
+    }
+    my $t = sqrt(-2.0 * log($s) / $s);
+
+    my $v1 = $x * $t;
+    my $v2 = $y * $t;
+
+    return $v1;
+}
+sub gen_nd_1
+{
+    my $saved = undef;
+
+    return sub {
+	if (defined $saved) {
+	    my $rv = $saved;
+	    undef $saved;
+	    return $rv;
+	}
+        else {
+            my $rho = 1.0 - rand; # distributed in the interval ( 0; +1 ]
+            my $phi = 1.0 - rand;
+
+            my $s = 2.0 * PI * $phi;
+            my $t = sqrt(-2.0 * log($rho));
+
+            my $v1 = cos($s) * $t;
+            $saved = sin($s) * $t;
+
+            return $v1;
+        }
+    }
+}
+sub gen_nd_2
+{
+    my $saved = undef;
+
+    return sub {
+	if (defined $saved) {
+	    my $rv = $saved;
+	    undef $saved;
+	    return $rv;
+	}
+        else {
+            my ($x, $y, $s);
+
+            while (1) {
+                $x = 1.0 - 2.0 * rand; # distributed in the interval ( -1; +1 ] wrong!!!
+                $y = 1.0 - 2.0 * rand;
+
+                $s = $x * $x + $y * $y;
+                last if ($s > 0.0 && $s <= 1.0);
+            }
+            my $t = sqrt(-2.0 * log($s) / $s);
+
+            my $v1 = $x * $t;
+            $saved = $y * $t;
+
+            return $v1;
+        }
+    }
+}
+# ------------------------------------------------------------------------------
+1;
+__END__
 
 =head1 NAME
 
@@ -56,10 +177,8 @@ Oleg Alistratov, C<< <zero at cpan.org> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-math-random-normaldistribution at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math-Random-NormalDistribution>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math-Random-NormalDistribution>.
+I will be notified, and then you'll automatically be notified of progress on your bug as I make changes.
 
 
 =head1 SUPPORT
@@ -90,9 +209,6 @@ L<http://cpanratings.perl.org/d/Math-Random-NormalDistribution>
 L<http://search.cpan.org/dist/Math-Random-NormalDistribution/>
 
 =back
-
-
-=head1 ACKNOWLEDGEMENTS
 
 
 =head1 LICENSE AND COPYRIGHT
