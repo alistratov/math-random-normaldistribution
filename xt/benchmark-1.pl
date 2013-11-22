@@ -21,10 +21,11 @@ sub main
 
     timethese($count, {
         'v1'    => sub { nd_1() },
-        'v2'    => sub { nd_2() },
+        #'v2'    => sub { nd_2() },
         'op'    => sub { optnd_1() },
+        'oppi'  => sub { optnd_pi() },
         'gv1'   => sub { $g1->() },
-        'gv2'   => sub { $g2->() },
+        #'gv2'   => sub { $g2->() },
         'gop'   => sub { $go->() },
     });
 }
@@ -119,6 +120,10 @@ sub optnd_1
 {
     return cos(2.0 * PI * (1.0 - rand)) * sqrt(-2.0 * log(1.0 - rand));
 }
+sub optnd_pi
+{
+    return cos(6.28318530717958623199592693708837032318115234375 * (1.0 - rand)) * sqrt(-2.0 * log(1.0 - rand));
+}
 sub gen_optnd_1
 {
     my $saved = undef;
@@ -150,3 +155,11 @@ Benchmark: timing 10000000 iterations of gop, gv1, gv2, op, v1, v2...
         v1: 14 wallclock secs (14.93 usr +  0.01 sys = 14.94 CPU) @ 669344.04/s (n=10000000)
         v2: 21 wallclock secs (21.31 usr +  0.02 sys = 21.33 CPU) @ 468823.25/s (n=10000000)
 
+
+Benchmark: timing 10000000 iterations of gop, gv1, gv2, op, v1, v2...
+       gop:  6 wallclock secs ( 6.26 usr +  0.00 sys =  6.26 CPU) @ 1597444.09/s (n=10000000)
+       gv1:  8 wallclock secs ( 7.15 usr +  0.00 sys =  7.15 CPU) @ 1398601.40/s (n=10000000)
+       gv2: 10 wallclock secs ( 9.00 usr +  0.00 sys =  9.00 CPU) @ 1111111.11/s (n=10000000)
+        op:  4 wallclock secs ( 5.31 usr +  0.00 sys =  5.31 CPU) @ 1883239.17/s (n=10000000)
+        v1: 10 wallclock secs (10.42 usr +  0.00 sys = 10.42 CPU) @ 959692.90/s (n=10000000)
+        v2: 14 wallclock secs (14.50 usr +  0.00 sys = 14.50 CPU) @ 689655.17/s (n=10000000)
