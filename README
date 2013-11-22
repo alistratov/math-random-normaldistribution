@@ -1,7 +1,7 @@
 Math::Random::NormalDistribution
 
 A Perl module to generate normally distributed pseudo-random numbers
-via Box–Muller transform.
+via Box-Muller transform.
 
 
 INSTALLATION
