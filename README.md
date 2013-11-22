@@ -2,9 +2,9 @@
 [![Build Status](https://travis-ci.org/alistratov/math-random-normaldistribution.png?branch=master)](https://travis-ci.org/alistratov/math-random-normaldistribution)
 
 A Perl module to generate normally distributed pseudo-random numbers
-via Box�Muller transform.
+via Box–Muller transform.
 
-## INSTALLATION
+## Installation
 
 To install this module, run the following commands:
 
@@ -13,7 +13,7 @@ To install this module, run the following commands:
 	make test
 	make install
 
-## SUPPORT AND DOCUMENTATION
+## Support and Documentation
 
 After installing, you can find documentation for this module with the
 perldoc command.
@@ -26,12 +26,13 @@ You can also look for information at:
  * [CPAN Ratings](http://cpanratings.perl.org/d/Math-Random-NormalDistribution)
  * [Search CPAN](http://search.cpan.org/dist/Math-Random-NormalDistribution/)
 
-## LICENSE AND COPYRIGHT
+## License and Copyright
 
-Copyright (C) 2013 Oleg Alistratov
+Copyright © 2013 Oleg Alistratov
 
 This program is free software; you can redistribute it and/or modify it
-under the terms of the the [Artistic License 2.0](http://www.perlfoundation.org/artistic_license_2_0).
+under the terms of the the
+[Artistic License 2.0](http://www.perlfoundation.org/artistic_license_2_0).
 
 Any use, modification, and distribution of the Standard or Modified
 Versions is governed by this Artistic License. By using, modifying or
