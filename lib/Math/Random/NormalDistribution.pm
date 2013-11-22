@@ -49,8 +49,8 @@ Math::Random::NormalDistribution - Normally distributed random numbers.
 =head1 DESCRIPTION
 
 This module uses I<Box-Muller transform> to generate independent, normally
-distributed random fractional numbers (normal deviates), given uniformly
-distributed random numbers (common C<rand>).
+distributed random fractional numbers (the normal deviates), given uniformly
+distributed random numbers (the source is common C<rand>).
 
 
 =head1 FUNCTIONS
@@ -74,12 +74,12 @@ For example, just draw a simple chart:
     use Math::Random::NormalDistribution;
 
     my $LINES = 10;
-    my $TIMES = $LINES * 15;
+    my $VALUES = $LINES * 15;
 
     my @count = (0) x $LINES;
     my $generator = rand_nd_generator($LINES / 2, $LINES / 6);
 
-    for (1 .. $TIMES) {
+    for (1 .. $VALUES) {
         my $x = $generator->();
         my $idx = int($x);
         next if $idx < 0 || $idx >= $LINES;
