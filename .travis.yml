@@ -6,3 +6,10 @@ perl:
   - "5.12"
   - "5.10"
   - "5.8"
+
+env:
+  - ALLOW_NONDETERMINISTIC_TESTS=1
+  
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libstatistics-descriptive-perl
