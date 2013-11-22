@@ -1,4 +1,4 @@
-use 5.006;
+use 5.008;
 use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
@@ -9,8 +9,21 @@ WriteMakefile(
     VERSION_FROM     => 'lib/Math/Random/NormalDistribution.pm',
     ABSTRACT_FROM    => 'lib/Math/Random/NormalDistribution.pm',
     LICENSE          => 'Artistic_2_0',
+
+    META_MERGE => {
+      'meta-spec' => { version => 2 },
+      resources => {
+        repository => {
+          type => 'git',
+          url => 'https://github.com/alistratov/math-random-normaldistribution.git',
+          web => 'https://github.com/alistratov/math-random-normaldistribution',
+        },
+      },
+    },
+
     PL_FILES         => {},
-    MIN_PERL_VERSION => 5.006,
+    INSTALLDIRS      => 'site',
+    MIN_PERL_VERSION => 5.008,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,
     },
@@ -18,8 +31,7 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'Test::More' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Math-Random-NormalDistribution-*' },
