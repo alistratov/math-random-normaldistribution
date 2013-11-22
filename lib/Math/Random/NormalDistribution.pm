@@ -11,114 +11,19 @@ our $VERSION = '0.01';
 use Exporter;
 use base qw(Exporter);
 our @EXPORT = qw(
-    password_entropy
+    rand_nd_generator
 );
 # ------------------------------------------------------------------------------
-use constant PI => 4 * atan2(1, 1);
-# ------------------------------------------------------------------------------
+use constant TWOPI => 2.0 * 4.0 * atan2(1.0, 1.0);
+
 sub rand_nd_generator(;@)
 {
     my ($mean, $stddev) = @_;
-
-    my $saved = undef;
-
-    return sub {
-
-    };
-}
-sub rand_nd_generator_log(;@)
-{
-    my ($mean, $stddev) = @_;
-
-    my $saved = undef;
+    $mean = 0.0 if ! defined $mean;
+    $stddev = 1.0 if ! defined $stddev;
 
     return sub {
-
-    };
-}
-# ------------------------------------------------------------------------------
-sub nd_1
-{
-    my $rho = 1.0 - rand; # distributed in the interval ( 0; +1 ]
-    my $phi = 1.0 - rand;
-
-    my $s = 2.0 * PI * $phi;
-    my $t = sqrt(-2.0 * log($rho));
-
-    my $v1 = cos($s) * $t;
-    my $v2 = sin($s) * $t;
-
-    return $v1;
-}
-sub nd_2
-{
-    my ($x, $y, $s);
-
-    while (1) {
-        $x = 1.0 - 2.0 * rand; # distributed in the interval ( -1; +1 ] wrong!!!
-        $y = 1.0 - 2.0 * rand;
-
-        $s = $x * $x + $y * $y;
-        last if ($s > 0.0 && $s <= 1.0);
-    }
-    my $t = sqrt(-2.0 * log($s) / $s);
-
-    my $v1 = $x * $t;
-    my $v2 = $y * $t;
-
-    return $v1;
-}
-sub gen_nd_1
-{
-    my $saved = undef;
-
-    return sub {
-	if (defined $saved) {
-	    my $rv = $saved;
-	    undef $saved;
-	    return $rv;
-	}
-        else {
-            my $rho = 1.0 - rand; # distributed in the interval ( 0; +1 ]
-            my $phi = 1.0 - rand;
-
-            my $s = 2.0 * PI * $phi;
-            my $t = sqrt(-2.0 * log($rho));
-
-            my $v1 = cos($s) * $t;
-            $saved = sin($s) * $t;
-
-            return $v1;
-        }
-    }
-}
-sub gen_nd_2
-{
-    my $saved = undef;
-
-    return sub {
-	if (defined $saved) {
-	    my $rv = $saved;
-	    undef $saved;
-	    return $rv;
-	}
-        else {
-            my ($x, $y, $s);
-
-            while (1) {
-                $x = 1.0 - 2.0 * rand; # distributed in the interval ( -1; +1 ] wrong!!!
-                $y = 1.0 - 2.0 * rand;
-
-                $s = $x * $x + $y * $y;
-                last if ($s > 0.0 && $s <= 1.0);
-            }
-            my $t = sqrt(-2.0 * log($s) / $s);
-
-            my $v1 = $x * $t;
-            $saved = $y * $t;
-
-            return $v1;
-        }
+        return $mean + $stddev * cos(TWOPI * (1.0 - rand)) * sqrt(-2.0 * log(1.0 - rand));
     }
 }
 # ------------------------------------------------------------------------------
@@ -127,131 +32,97 @@ __END__
 
 =head1 NAME
 
-Math::Random::NormalDistribution - The great new Math::Random::NormalDistribution!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
+Math::Random::NormalDistribution - Normally distributed random numbers.
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+    use Math::Random::NormalDistribution;
 
-Perhaps a little code snippet.
+    # Create generator of normally distributed numbers
+    # with mean 5.0 and standard deviation 3.0
+    my $generator = rand_nd_generator(5.0, 3.0);
+
+    # Generate ten numbers
+    my @nums = map { $generator->() } (1..10);
+
+
+=head1 DESCRIPTION
+
+This module uses I<Box-Muller transform> to generate independent, normally
+distributed random fractional numbers (normal deviates), given uniformly
+distributed random numbers (common C<rand>).
+
+
+=head1 FUNCTIONS
+
+There's only one function in this package and it's exported by default.
+
+=over
+
+=item C<rand_nd_generator($mean, $stddev)>
+
+Accepts the mean (also known as expected value, or mathematical expectation)
+and the standard deviation (the square root of variance).
+Both arguments are optional - by default, the generator returns standard numbers
+(with expected value 0 and standard deviation 1).
+
+Returns a subref: reference to a function without arguments, which returns
+a new random number on each call.
+
+For example, just draw a simple chart:
 
     use Math::Random::NormalDistribution;
 
-    my $foo = Math::Random::NormalDistribution->new();
-    ...
+    my $LINES = 10;
+    my $TIMES = $LINES * 15;
 
-=head1 EXPORT
+    my @count = (0) x $LINES;
+    my $generator = rand_nd_generator($LINES / 2, $LINES / 6);
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    for (1 .. $TIMES) {
+        my $x = $generator->();
+        my $idx = int($x);
+        next if $idx < 0 || $idx >= $LINES;
+        $count[$idx]++;
+    }
 
-=head1 SUBROUTINES/METHODS
+    print '|' x $_, "\n" for (@count);
 
-=head2 function1
+Output:
 
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
-
-=head1 AUTHOR
-
-Oleg Alistratov, C<< <zero at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-math-random-normaldistribution at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math-Random-NormalDistribution>.
-I will be notified, and then you'll automatically be notified of progress on your bug as I make changes.
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Math::Random::NormalDistribution
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Math-Random-NormalDistribution>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Math-Random-NormalDistribution>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Math-Random-NormalDistribution>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Math-Random-NormalDistribution/>
+    ||
+    ||||
+    |||||||||||||
+    ||||||||||||||||||||||
+    |||||||||||||||||||||||||||||||||||||||||||
+    ||||||||||||||||||||||||||||||||
+    |||||||||||||||
+    |||||||||||||
+    |||||
+    |
 
 =back
 
 
-=head1 LICENSE AND COPYRIGHT
+=head1 SEE ALSO
 
-Copyright 2013 Oleg Alistratov.
+L<Math::Random::SkewNormal>.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
 
-L<http://www.perlfoundation.org/artistic_license_2_0>
+=head1 COPYRIGHT
 
-Any use, modification, and distribution of the Standard or Modified
-Versions is governed by this Artistic License. By using, modifying or
-distributing the Package, you accept this license. Do not use, modify,
-or distribute the Package, if you do not accept this license.
+Copyright E<0x00a9> 2013 Oleg Alistratov. All rights reserved.
 
-If your Modified Version has been derived from a Modified Version made
-by someone other than you, you are nevertheless required to ensure that
-your Modified Version complies with the requirements of this license.
+This module is free software.  You can redistribute it and/or
+modify it under the terms of the Artistic License 2.0.
 
-This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+This program is distributed in the hope that it will be useful,
+but without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
 
-This license includes the non-exclusive, worldwide, free-of-charge
-patent license to make, have made, use, offer to sell, sell, import and
-otherwise transfer the Package with respect to any patent claims
-licensable by the Copyright Holder that are necessarily infringed by the
-Package. If you institute patent litigation (including a cross-claim or
-counterclaim) against any party alleging that the Package constitutes
-direct or contributory patent infringement, then this Artistic License
-to you shall terminate on the date that such litigation is filed.
 
-Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
-AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
-YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
-CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
-CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=head1 AUTHOR
 
+Oleg Alistratov <zero@cpan.org>
 
 =cut
-
-1; # End of Math::Random::NormalDistribution
